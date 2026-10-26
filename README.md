@@ -5,6 +5,11 @@ com comandos, diagnóstico, validação e recuperação.
 
 Autor: Gabriel Palhano Gomes
 
+## Plano de implementação
+
+Consulte o [checklist mestre de Linux, Windows e observabilidade](ROADMAP.md).
+Ele separa documentação, scripts planejados, verificações e critérios de aceite.
+
 ## Procedimentos Linux
 
 | Procedimento | Objetivo |
