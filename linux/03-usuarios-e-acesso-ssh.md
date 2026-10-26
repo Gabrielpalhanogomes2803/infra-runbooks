@@ -163,4 +163,3 @@ Testar nova conexão antes de encerrar a recuperação.
 - Caminho de acesso:
 - Testes de conexão e sudo:
 - Pendências:
-

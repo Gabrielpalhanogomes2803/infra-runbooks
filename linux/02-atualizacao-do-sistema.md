@@ -53,7 +53,7 @@ apt update atualiza o índice; não instala atualizações.
 ## 3. Simular
 
 ```bash
-sudo apt-get --simulate upgrade
+sudo apt --simulate upgrade
 ```
 
 Revisar o resumo e os pacotes mantidos na versão atual.
