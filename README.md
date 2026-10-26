@@ -1,33 +1,43 @@
 # Infra Runbooks
 
-Procedimentos de infraestrutura Linux e Windows, com comandos,
-validações e orientações para diagnóstico e automação.
+Procedimentos práticos de infraestrutura Linux e Windows Server,
+com comandos, diagnóstico, validação e recuperação.
 
 Autor: Gabriel Palhano Gomes
 
-## Procedimentos disponíveis
+## Procedimentos Linux
 
-| Área | Procedimento |
+| Procedimento | Objetivo |
 |---|---|
-| Linux | [Inspeção inicial de servidor](linux/01-inspecao-inicial.md) |
+| [01 — Inspeção inicial](linux/01-inspecao-inicial.md) | Levantar sistema, recursos, rede e serviços |
+| [02 — Atualização do sistema](linux/02-atualizacao-do-sistema.md) | Planejar atualizações e validar a manutenção |
+| [03 — Usuários e SSH](linux/03-usuarios-e-acesso-ssh.md) | Configurar e validar acesso administrativo |
+| [04 — Disco e logs](linux/04-disco-e-gerenciamento-de-logs.md) | Investigar consumo e gerenciar retenção |
+| [05 — Serviços systemd](linux/05-servicos-systemd.md) | Diagnosticar e operar serviços |
 
 ## Como utilizar
 
-1. Leia o procedimento inteiro antes de executar.
-2. Confira os pré-requisitos e o ambiente.
-3. Execute cada etapa e interprete os resultados.
-4. Registre evidências e pendências.
-5. Remova informações sensíveis antes de publicar registros.
+1. Leia o procedimento completo antes de executar.
+2. Confira pré-requisitos, impacto e recuperação.
+3. Adapte os exemplos ao ambiente.
+4. Execute as etapas necessárias e interprete os resultados.
+5. Valide o funcionamento das aplicações.
+6. Registre alterações, evidências e pendências.
 
-## Estrutura
+## Organização
 
-- linux/: procedimentos para servidores Linux.
-- windows/: procedimentos para Windows Server e Active Directory.
-- scripts/: automações associadas aos procedimentos.
+- linux/: procedimentos para Linux.
+- windows/: reservado para Windows Server e Active Directory.
+- scripts/: reservado para futuras automações.
+
+## Validação
+
+Documentação em evolução.
+A presença de um procedimento não significa que todas as suas
+etapas foram executadas ou testadas em todos os ambientes.
 
 ## Próximas entregas
 
-- Atualização de pacotes e validação após manutenção.
+- Automação da coleta de informações.
 - Preparação inicial de servidor Linux.
 - Inspeção de Windows Server e Active Directory.
-- Automação da coleta de informações do servidor.
