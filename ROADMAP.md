@@ -8,7 +8,7 @@ Atualizado em 27/10/2026.
 
 - [x] significa somente que a entrega descrita nessa linha foi concluída.
 - Documento publicado não significa script implementado nem teste funcional aprovado.
-- L01, L04 e L05 já possuem primeira versão publicada; os demais scripts são propostas.
+- L01, L04, L05 e L07 já possuem primeira versão publicada; os demais scripts são propostas.
 - Atualizar cada item somente com commit e evidência correspondente.
 - Estados: planejado → implementado → revisado → testado em laboratório → documentado.
 - Automação significa uma ferramenta executável; agendamento só entra após validação manual.
@@ -43,7 +43,7 @@ Atualizado em 27/10/2026.
 
 ## 2. Linux — procedimentos, scripts e aceite
 
-L01, L04 e L05 estão implementados com testes parciais na VPS; demais scripts estão planejados.
+L01, L04 e L05 estão implementados com testes parciais na VPS. L07 tem testes isolados; demais scripts estão planejados.
 
 | ID | Documento existente | Script proposto | Verificação de aceite |
 |---|---|---|---|
@@ -68,10 +68,10 @@ L01, L04 e L05 estão implementados com testes parciais na VPS; demais scripts e
 - [ ] L01 — primeira versão publicada e testes parciais registrados no README: coleta, ferramenta ausente, argumento inválido e falha simulada no gravador. Pendente: testes adicionais, revisão de segurança da gravação e registro formal.
 - [ ] L02 — implementar consulta; validar manutenção manual e reboot em VM separadamente.
 - [ ] L03 — implementar consulta; testar chave, sudo e recuperação em nova sessão.
-- [ ] L04 — primeira versão publicada; testados limite normal, alerta, limite inválido e caminho inexistente na VPS. Pendente: testar filesystem sem inodes, caminhos com espaços e registrar evidências. A consulta de journal ainda não foi implementada.
-- [ ] L05 — primeira versão publicada; testadas unidades ativas, inativa, inexistente e argumento inválido na VPS. Pendente: testar unidade em falha e prioridade de condições combinadas, e registrar evidências.
+- [ ] L04 — script publicado e testado na VPS; testes isolados simulam montagem com espaços e ausência de percentual de inodes. Pendente: validação dessas condições na VPS e registro formal. A consulta de journal ainda não foi implementada.
+- [ ] L05 — script publicado e testado na VPS; testes isolados simulam unidade em falha e prioridade de condições combinadas. Pendente: teste de unidade real em falha e registro formal.
 - [ ] L06 — implementar pré-checagem; executar preparação manual em VM limpa.
-- [ ] L07 — implementar; testar NXDOMAIN, timeout, TCP fechado e HTTP com erro.
+- [ ] L07 — script implementado; testes isolados para DNS inexistente, TCP fechado, HTTP 500 e parâmetros inválidos. Pendente: teste real na VPS, timeout específico e registro formal.
 - [ ] L08 — implementar auditoria; testar caminhos externos IPv4/IPv6 e Docker.
 - [ ] L09 — implementar backup/restauração; testar destino ausente, erro de acesso e arquivo recuperado.
 - [ ] L10 — implementar coleta; comparar cenário normal e carga controlada no laboratório.

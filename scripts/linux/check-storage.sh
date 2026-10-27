@@ -58,10 +58,12 @@ fi
 
 limite=$((10#$limite))
 
-if ! command -v df >/dev/null 2>&1; then
-    echo "Erro: comando df não encontrado." >&2
-    exit 2
-fi
+for ferramenta in df awk; do
+    if ! command -v "$ferramenta" >/dev/null 2>&1; then
+        echo "Erro: comando $ferramenta não encontrado." >&2
+        exit 2
+    fi
+done
 
 # LC_ALL=C mantém a saída do df consistente para interpretação.
 if ! espaco=$(LC_ALL=C df -P -- "$caminho"); then
@@ -74,9 +76,9 @@ if ! inodes=$(LC_ALL=C df -Pi -- "$caminho"); then
     exit 2
 fi
 
-# Na saída POSIX do df, o percentual fica na penúltima coluna.
-uso_espaco=$(printf '%s\n' "$espaco" | awk 'NR > 1 {print $(NF-1); exit}')
-uso_inodes=$(printf '%s\n' "$inodes" | awk 'NR > 1 {print $(NF-1); exit}')
+# Procurar o primeiro campo percentual da linha, sem depender do nome da montagem.
+uso_espaco=$(printf '%s\n' "$espaco" | awk 'NR > 1 {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+%$/) {print $i; exit}}')
+uso_inodes=$(printf '%s\n' "$inodes" | awk 'NR > 1 {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+%$/) {print $i; exit}}')
 
 if [[ ! "$uso_espaco" =~ ^[0-9]+%$ ]] ||
    [[ ! "$uso_inodes" =~ ^[0-9]+%$ ]]; then

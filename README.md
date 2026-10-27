@@ -24,6 +24,7 @@ Cada runbook procura responder: **o que verificar, como executar, como validar e
 | Inventário Linux | Script implementado e testado na VPS |
 | Verificação de armazenamento | Script implementado e testado na VPS |
 | Verificação de serviços | Script implementado e testado na VPS |
+| Verificação de rede | Script implementado; testes isolados locais |
 | Windows Server e observabilidade | Planejados no [checklist mestre](ROADMAP.md) |
 
 ## Comece por aqui
@@ -57,7 +58,7 @@ Cada runbook procura responder: **o que verificar, como executar, como validar e
 
 ## Scripts Linux
 
-Os três scripts abaixo **fazem consultas**. Revise os comandos e as permissões antes de utilizá-los em outro ambiente.
+Os quatro scripts abaixo **fazem consultas**. Revise os comandos e as permissões antes de utilizá-los em outro ambiente.
 
 ### Inventário do servidor
 
@@ -107,7 +108,7 @@ O caminho padrão é `/` e o limite padrão é **80%**, aplicado tanto ao espaç
 
 Sistemas de arquivos que não informam uso de inodes podem produzir erro de consulta.
 
-**Testes registrados:** Ubuntu 26.04.1 LTS; execução normal, alerta com limite de teste, limite inválido e caminho inexistente.
+**Testes registrados:** Ubuntu 26.04.1 LTS: execução normal, alerta, limite inválido e caminho inexistente. Testes isolados: ponto de montagem com espaços e saída sem percentual de inodes. A validação dessas condições na VPS permanece pendente.
 
 ### Verificação de serviços systemd
 
@@ -129,9 +130,38 @@ Informe o nome completo da unidade com o sufixo `.service`. O script depende de 
 
 Se houver condições diferentes, erro de consulta tem prioridade, seguido de unidade ausente e serviço inativo.
 
-**Testes registrados:** Ubuntu 26.04.1 LTS; serviços ativos, unidade inativa, argumento inválido e unidade inexistente.
+**Testes registrados:** Ubuntu 26.04.1 LTS: serviços ativos, unidade inativa, argumento inválido e unidade inexistente. Testes isolados com systemctl simulado cobrem unidade em falha e prioridade de resultados combinados; unidade real em falha ainda não foi testada.
 
 Um serviço ativo não garante que a aplicação esteja respondendo corretamente. Serviços periódicos podem ficar inativos entre execuções normalmente.
+
+### Rede, DNS e HTTP
+
+[check-network.sh](scripts/linux/check-network.sh) consulta a rota padrão IPv4 e verifica resolução, conexão TCP e resposta HTTP(S), com tempo limite por teste.
+
+```bash
+./scripts/linux/check-network.sh --help
+./scripts/linux/check-network.sh example.com 443 https://example.com/ 5
+```
+
+Informe **host, porta e URL**; o quarto argumento é o timeout opcional em segundos. DNS e TCP usam o host informado; HTTP usa a URL, que pode ter destino diferente. A rota mostrada é a padrão IPv4 e não comprova a rota usada até o destino.
+
+| Código | Resultado |
+|:--:|---|
+| 0 | Verificações obrigatórias passaram |
+| 1 | Falha de resolução, TCP ou HTTP |
+| 2 | Argumento, dependência ou consulta local inválida |
+
+Dependências: Bash, ip, getent, timeout e curl. A consulta HTTP usa GET, aceita 2xx/3xx, não segue redirecionamentos nem usa proxy e valida TLS. A URL não aceita credenciais, query ou fragmento. Uma resposta bem-sucedida não comprova que toda a aplicação funciona.
+
+**Testes:** cenários isolados com servidor HTTP local e respostas simuladas; execução na VPS e validação em outros ambientes ainda pendentes.
+
+### Executar testes isolados
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+Os testes utilizam arquivos e respostas temporárias simuladas e um servidor HTTP local. Python 3 e as ferramentas usadas pelos scripts são necessários; a suíte não valida conectividade externa nem substitui testes na VPS.
 
 ## Organização
 
@@ -152,7 +182,7 @@ Os runbooks **06–15** receberam revisão documental; a execução em laborató
 
 Próximos passos:
 
-- Evoluir as verificações de serviços e rede.
+- Validar rede na VPS e ampliar os testes dos serviços em laboratório.
 - Testar manutenção e restauração em laboratório.
 - Criar inventário PowerShell para Windows Server.
 - Conectar alertas de observabilidade a procedimentos de resposta.
