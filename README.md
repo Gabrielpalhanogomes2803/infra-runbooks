@@ -23,6 +23,7 @@ Cada runbook procura responder: **o que verificar, como executar, como validar e
 | 15 runbooks Linux | Publicados; validação prática varia por procedimento |
 | Inventário Linux | Script implementado e testado na VPS |
 | Verificação de armazenamento | Script implementado e testado na VPS |
+| Verificação de serviços | Script implementado e testado na VPS |
 | Windows Server e observabilidade | Planejados no [checklist mestre](ROADMAP.md) |
 
 ## Comece por aqui
@@ -56,7 +57,7 @@ Cada runbook procura responder: **o que verificar, como executar, como validar e
 
 ## Scripts Linux
 
-Os dois scripts abaixo **fazem consultas**. Revise os comandos e as permissões antes de utilizá-los em outro ambiente.
+Os três scripts abaixo **fazem consultas**. Revise os comandos e as permissões antes de utilizá-los em outro ambiente.
 
 ### Inventário do servidor
 
@@ -107,6 +108,30 @@ O caminho padrão é `/` e o limite padrão é **80%**, aplicado tanto ao espaç
 Sistemas de arquivos que não informam uso de inodes podem produzir erro de consulta.
 
 **Testes registrados:** Ubuntu 26.04.1 LTS; execução normal, alerta com limite de teste, limite inválido e caminho inexistente.
+
+### Verificação de serviços systemd
+
+[check-services.sh](scripts/linux/check-services.sh) consulta o estado de um ou mais serviços, sem iniciá-los, pará-los ou reiniciá-los.
+
+```bash
+./scripts/linux/check-services.sh --help
+./scripts/linux/check-services.sh nginx.service docker.service
+```
+
+Informe o nome completo da unidade com o sufixo `.service`. O script depende de Bash e de um gerenciador systemd acessível.
+
+| Código | Resultado |
+|:--:|---|
+| 0 | Todos os serviços consultados estão ativos |
+| 1 | Pelo menos um serviço está inativo ou em falha |
+| 2 | Argumento inválido ou erro de consulta |
+| 3 | Pelo menos uma unidade não foi encontrada |
+
+Se houver condições diferentes, erro de consulta tem prioridade, seguido de unidade ausente e serviço inativo.
+
+**Testes registrados:** Ubuntu 26.04.1 LTS; serviços ativos, unidade inativa, argumento inválido e unidade inexistente.
+
+Um serviço ativo não garante que a aplicação esteja respondendo corretamente. Serviços periódicos podem ficar inativos entre execuções normalmente.
 
 ## Organização
 
