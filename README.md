@@ -84,3 +84,29 @@ diretório inexistente e falha simulada no gravador.
 
 Revise o relatório: consultas executadas com sucesso não comprovam
 que as aplicações estão saudáveis.
+
+## Verificação de armazenamento Linux
+
+O script consulta espaço e inodes do sistema de arquivos que contém
+o caminho informado. Não exclui arquivos nem altera o armazenamento.
+
+```bash
+./scripts/linux/check-storage.sh --help
+./scripts/linux/check-storage.sh /
+./scripts/linux/check-storage.sh /var/log 90
+```
+
+O caminho padrão é `/` e o limite padrão é `80%`.
+O mesmo limite é usado para espaço e inodes.
+
+Códigos de saída:
+- `0`: espaço e inodes abaixo do limite.
+- `1`: pelo menos um limite atingido.
+- `2`: argumento inválido ou erro de consulta.
+
+Dependências: Bash, `df` e `awk`.
+Alguns sistemas de arquivos podem não informar uso de inodes;
+nesse caso, a consulta retorna erro.
+
+Validado em Ubuntu 26.04.1 LTS: execução normal, alerta com
+limite de teste, limite inválido e caminho inexistente.
