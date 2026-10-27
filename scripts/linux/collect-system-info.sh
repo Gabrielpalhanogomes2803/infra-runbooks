@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 # Inventário básico de servidor Linux.
-# Não instala pacotes nem altera serviços.
+# Consulta informações sem instalar pacotes ou alterar serviços.
 
 set -u
+
+coleta_parcial=0
 
 mostrar_ajuda() {
     cat <<'AJUDA'
@@ -13,11 +15,17 @@ Uso:
   ./collect-system-info.sh --help
 
 Opções:
-  --report      Salva um relatório privado em ~/infra-reports
+  --report      Salva relatório privado em ~/infra-reports
   --help, -h    Mostra esta ajuda
 
-Sem opções, apresenta o inventário no terminal.
+Códigos de saída:
+  0    Coleta completa ou ajuda exibida
+  1    Erro ao criar ou gravar o relatório
+  2    Argumento inválido
+  3    Coleta parcial
+
 O relatório pode conter IPs, nomes internos e identificadores.
+Revise o conteúdo antes de compartilhar.
 AJUDA
 }
 
@@ -29,11 +37,13 @@ executar() {
 
     if ! command -v "$1" >/dev/null 2>&1; then
         printf 'Não disponível: %s\n' "$1"
+        coleta_parcial=1
         return
     fi
 
     if ! "$@"; then
         printf 'Consulta falhou: %s\n' "$1"
+        coleta_parcial=1
     fi
 }
 
@@ -45,10 +55,15 @@ coletar() {
     executar "Data e horário" date -Is
 
     printf '\n--- Sistema operacional ---\n'
+
     if [ -r /etc/os-release ]; then
-        cat /etc/os-release
+        if ! cat /etc/os-release; then
+            echo "Falha ao ler /etc/os-release."
+            coleta_parcial=1
+        fi
     else
         echo "Arquivo /etc/os-release não disponível."
+        coleta_parcial=1
     fi
 
     executar "Kernel" uname -r
@@ -63,12 +78,18 @@ coletar() {
     executar "Horário e sincronização" timedatectl
     executar "Unidades systemd com falha" systemctl --failed --no-pager
 
+    if [ "$coleta_parcial" -eq 1 ]; then
+        printf '\nInventário parcial: revise as consultas indicadas.\n'
+        return 3
+    fi
+
     printf '\nInventário finalizado. Revise os resultados.\n'
+    return 0
 }
 
 if [ "$#" -eq 0 ]; then
     coletar
-    exit 0
+    exit $?
 fi
 
 if [ "$#" -ne 1 ]; then
@@ -80,6 +101,7 @@ case "$1" in
     --help|-h)
         mostrar_ajuda
         ;;
+
     --report)
         diretorio="$HOME/infra-reports"
 
@@ -96,14 +118,31 @@ case "$1" in
             exit 1
         }
 
-        if coletar > "$arquivo" 2>&1; then
-            printf 'Relatório salvo em: %s\n' "$arquivo"
-            echo "Revise informações sensíveis antes de compartilhar."
-        else
-            echo "Erro durante a gravação. Verifique o arquivo: $arquivo" >&2
+        coletar 2>&1 | cat > "$arquivo"
+        status=("${PIPESTATUS[@]}")
+
+        if [ "${status[1]}" -ne 0 ]; then
+            echo "Erro ao gravar o relatório: $arquivo" >&2
+            echo "O arquivo pode estar incompleto." >&2
             exit 1
         fi
+
+        if [ "${status[0]}" -ne 0 ] && [ "${status[0]}" -ne 3 ]; then
+            echo "Erro durante a coleta. Arquivo: $arquivo" >&2
+            exit 1
+        fi
+
+        printf 'Relatório salvo em: %s\n' "$arquivo"
+        echo "Revise informações sensíveis antes de compartilhar."
+
+        if [ "${status[0]}" -eq 3 ]; then
+            echo "A coleta foi parcial. Confira o relatório." >&2
+            exit 3
+        fi
+
+        exit 0
         ;;
+
     *)
         echo "Erro: opção desconhecida: $1" >&2
         echo "Use --help para consultar as opções." >&2

@@ -70,24 +70,17 @@ Não confundir verificação de sintaxe dos exemplos com teste funcional.
 
 ## Script de inventário Linux
 
-Primeira versão de coleta de informações básicas do servidor.
+O script continua quando uma consulta falha e informa coleta parcial.
 
-```bash
-./scripts/linux/collect-system-info.sh --help
-./scripts/linux/collect-system-info.sh
-./scripts/linux/collect-system-info.sh --report
-```
+Códigos de saída:
+- `0`: coleta completa ou ajuda exibida.
+- `1`: erro na criação ou gravação do relatório.
+- `2`: argumento inválido.
+- `3`: coleta parcial.
 
-A opção `--report` exige o diretório `~/infra-reports` existente
-e grava um arquivo com permissões restritas.
+Validação realizada em Ubuntu 26.04.1 LTS: coleta normal,
+relatório privado, argumento inválido, ferramenta ausente,
+diretório inexistente e falha simulada no gravador.
 
-O relatório pode conter IPs, nomes internos e identificadores.
-Revise e remova dados sensíveis antes de compartilhá-lo.
-
-Esta versão continua a coleta quando uma consulta falha.
-Por isso, revise o conteúdo: o código de saída não confirma
-que todas as consultas foram concluídas com sucesso.
-
-Validação realizada: Ubuntu 26.04.1 LTS, execução de inventário,
-ajuda, relatório e argumento inválido. O tratamento de ferramentas
-ausentes ainda precisa de teste.
+Revise o relatório: consultas executadas com sucesso não comprovam
+que as aplicações estão saudáveis.
