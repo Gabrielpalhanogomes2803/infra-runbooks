@@ -67,3 +67,27 @@ Não confundir verificação de sintaxe dos exemplos com teste funcional.
 - Automação da coleta de informações.
 - Execução dos laboratórios Linux e registro dos resultados.
 - Inspeção de Windows Server e Active Directory.
+
+## Script de inventário Linux
+
+Primeira versão de coleta de informações básicas do servidor.
+
+```bash
+./scripts/linux/collect-system-info.sh --help
+./scripts/linux/collect-system-info.sh
+./scripts/linux/collect-system-info.sh --report
+```
+
+A opção `--report` exige o diretório `~/infra-reports` existente
+e grava um arquivo com permissões restritas.
+
+O relatório pode conter IPs, nomes internos e identificadores.
+Revise e remova dados sensíveis antes de compartilhá-lo.
+
+Esta versão continua a coleta quando uma consulta falha.
+Por isso, revise o conteúdo: o código de saída não confirma
+que todas as consultas foram concluídas com sucesso.
+
+Validação realizada: Ubuntu 26.04.1 LTS, execução de inventário,
+ajuda, relatório e argumento inválido. O tratamento de ferramentas
+ausentes ainda precisa de teste.
