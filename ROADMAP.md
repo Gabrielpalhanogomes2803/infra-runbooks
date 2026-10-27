@@ -43,7 +43,7 @@ Atualizado em 27/10/2026.
 
 ## 2. Linux — procedimentos, scripts e aceite
 
-L01, L04 e L05 estão implementados com testes parciais na VPS. L07 tem testes isolados; demais scripts estão planejados.
+L01, L04, L05 e L07 estão implementados com testes parciais na VPS; os demais scripts estão planejados.
 
 | ID | Documento existente | Script proposto | Verificação de aceite |
 |---|---|---|---|
@@ -71,7 +71,7 @@ L01, L04 e L05 estão implementados com testes parciais na VPS. L07 tem testes i
 - [ ] L04 — script publicado e testado na VPS; testes isolados simulam montagem com espaços e ausência de percentual de inodes. Pendente: validação dessas condições na VPS e registro formal. A consulta de journal ainda não foi implementada.
 - [ ] L05 — script publicado e testado na VPS; testes isolados simulam unidade em falha e prioridade de condições combinadas. Pendente: teste de unidade real em falha e registro formal.
 - [ ] L06 — implementar pré-checagem; executar preparação manual em VM limpa.
-- [ ] L07 — script implementado; testes isolados para DNS inexistente, TCP fechado, HTTP 500 e parâmetros inválidos. Teste na VPS de 27/10 mostrou IPv6 expirando no curl e resposta HTTP 200; teste TCP foi ajustado para IPv4 e precisa ser repetido. Pendente: timeout específico e registro formal.
+- [ ] L07 — script implementado; testes isolados para DNS inexistente, TCP fechado, HTTP 500 e parâmetros inválidos. Em 27/10/2026, após o commit `2120c26`, os quatro testes automatizados passaram na VPS Ubuntu 26.04.1 LTS. A consulta a example.com retornou DNS OK, TCP IPv4 conectado, HTTP 200 e saída 0. Teste separado com curl via IPv6 excedeu o tempo; causa não identificada. Pendente: investigar IPv6 sem alterar configuração, testar timeout específico e outros casos de falha em laboratório e concluir registro formal.
 - [ ] L08 — implementar auditoria; testar caminhos externos IPv4/IPv6 e Docker.
 - [ ] L09 — implementar backup/restauração; testar destino ausente, erro de acesso e arquivo recuperado.
 - [ ] L10 — implementar coleta; comparar cenário normal e carga controlada no laboratório.
@@ -203,7 +203,7 @@ Não manter cópias divergentes de dashboards ou regras entre repositórios.
 ## 7. Próxima sequência de execução
 
 1. L01/L04/L05: consolidar testes, corrigir limitações e registrar evidências.
-2. L07: implementar consulta de rede com timeout e testes de falha.
+2. L07: ampliar testes de falha e timeout em laboratório e investigar conectividade IPv6 separadamente.
 3. Laboratório Linux: preparação → atualização → reboot → registro.
 4. L09: backup e restauração demonstrados.
 5. CI dos scripts e documentação.
