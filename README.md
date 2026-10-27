@@ -143,7 +143,7 @@ Um serviço ativo não garante que a aplicação esteja respondendo corretamente
 ./scripts/linux/check-network.sh example.com 443 https://example.com/ 5
 ```
 
-Informe **host, porta e URL**; o quarto argumento é o timeout opcional em segundos. DNS e TCP usam o host informado; HTTP usa a URL, que pode ter destino diferente. A rota mostrada é a padrão IPv4 e não comprova a rota usada até o destino.
+Informe **host, porta e URL**; o quarto argumento é o timeout opcional em segundos. DNS e TCP usam o host informado; HTTP usa a URL, que pode ter destino diferente. O TCP testa apenas o primeiro endereço IPv4 resolvido e não testa IPv6. A rota mostrada é a padrão IPv4 e não comprova a rota usada até o destino.
 
 | Código | Resultado |
 |:--:|---|

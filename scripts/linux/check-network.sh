@@ -14,6 +14,7 @@ URL deve começar por http:// ou https:// e não conter credenciais.
 O tempo limite, de 1 a 60 segundos, vale para cada teste.
 Os testes não seguem redirecionamentos. HTTP 2xx/3xx é considerado resposta;
 4xx/5xx é falha. A validação do certificado HTTPS continua ativa.
+O TCP testa apenas o primeiro endereço IPv4. IPv6 não é testado pelo TCP.
 A rota consultada é a rota padrão IPv4, não necessariamente a usada pelo destino.
 
 Códigos: 0 = verificações necessárias passaram; 1 = falha de rede ou HTTP;
@@ -74,10 +75,18 @@ else
     falha=1
 fi
 
-if timeout "${tempo}s" bash -c 'exec 3<>"/dev/tcp/$1/$2"' _ "$host" "$porta" 2>/dev/null; then
-    echo "TCP: conexão estabelecida ($host:$porta)"
+# Testa o primeiro endereço IPv4 resolvido; não avalia IPv6 nem todos os IPs.
+ipv4=""
+if enderecos=$(timeout "${tempo}s" getent ahostsv4 "$host" 2>/dev/null); then
+    read -r ipv4 _ <<< "$enderecos"
+fi
+if [[ ! "$ipv4" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "TCP IPv4: sem endereço IPv4 disponível para testar"
+    falha=1
+elif timeout "${tempo}s" bash -c 'exec 3<>"/dev/tcp/$1/$2"' _ "$ipv4" "$porta" 2>/dev/null; then
+    echo "TCP IPv4: conexão estabelecida ($ipv4:$porta)"
 else
-    echo "TCP: falhou ou excedeu o tempo ($host:$porta)"
+    echo "TCP IPv4: falhou ou excedeu o tempo ($ipv4:$porta)"
     falha=1
 fi
 

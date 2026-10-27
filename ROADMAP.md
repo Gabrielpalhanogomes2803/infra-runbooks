@@ -71,7 +71,7 @@ L01, L04 e L05 estão implementados com testes parciais na VPS. L07 tem testes i
 - [ ] L04 — script publicado e testado na VPS; testes isolados simulam montagem com espaços e ausência de percentual de inodes. Pendente: validação dessas condições na VPS e registro formal. A consulta de journal ainda não foi implementada.
 - [ ] L05 — script publicado e testado na VPS; testes isolados simulam unidade em falha e prioridade de condições combinadas. Pendente: teste de unidade real em falha e registro formal.
 - [ ] L06 — implementar pré-checagem; executar preparação manual em VM limpa.
-- [ ] L07 — script implementado; testes isolados para DNS inexistente, TCP fechado, HTTP 500 e parâmetros inválidos. Pendente: teste real na VPS, timeout específico e registro formal.
+- [ ] L07 — script implementado; testes isolados para DNS inexistente, TCP fechado, HTTP 500 e parâmetros inválidos. Teste na VPS de 27/10 mostrou IPv6 expirando no curl e resposta HTTP 200; teste TCP foi ajustado para IPv4 e precisa ser repetido. Pendente: timeout específico e registro formal.
 - [ ] L08 — implementar auditoria; testar caminhos externos IPv4/IPv6 e Docker.
 - [ ] L09 — implementar backup/restauração; testar destino ausente, erro de acesso e arquivo recuperado.
 - [ ] L10 — implementar coleta; comparar cenário normal e carga controlada no laboratório.
